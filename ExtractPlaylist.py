@@ -1,39 +1,33 @@
-import re, os
+import re, time
 import pyperclip
 
-if os.path.isfile('source.txt'):
-    f = open('source.txt','r', encoding='utf-8')
-    text = f.read()
+print('Copy playlist source code to clipboard and press enter.')
+input()
 
-    list = []
+text = pyperclip.paste()
+links = []
 
-    # Grab all unique matches with the key VideoId and add them to the list
-    for match in re.finditer('\"videoId\"', text):
-        e = match.end()
-        url = text[e+2:e+13]
+# Grab all unique matches with the key VideoId and add them to the list
+for match in re.finditer('\"videoId\"', text):
+    e = match.end()
+    url = text[e+2:e+13]
 
-        if url not in list:
-            list.append(url)
+    if url not in links:
+        links.append(url)
 
-    # Remove last trash entry from the list
-    list.pop()
+# Remove first and last unrelated entries from the list
+links.pop(0)
+links.pop()
 
-    # Add youtube url format to the video id
-    playlist = ['https://www.youtube.com/watch?v=' + i for i in list]
+# Add youtube url format to the video id
+playlist = ['https://www.youtube.com/watch?v=' + i for i in links]
 
-    # Copy urls to clipboard
-    pyperclip.copy('\n'.join(playlist))
+# Copy urls to clipboard
+pyperclip.copy('\n'.join(playlist))
 
-    # Print all the urls
-    for i in playlist:
-        print(i)
+# Print all the urls
+for i in playlist:
+    print(i)
 
-    f.close()
-
-    print('\nURLs copied to clipboard')
-    input()
-
-else:
-    print('No source.txt file found!')
-    print('Open a playlist and copy the source code to a source.txt file')
-    input()
+print('\nURLs copied to clipboard')
+time.sleep(3)
